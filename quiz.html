@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>爱吃睡的粉色笨猪 🐷</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+html,body{margin:0;min-height:100%}
+body{background:linear-gradient(#ffe3ec,#ffbcd3);font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;color:#7a2146;display:flex;flex-direction:column;align-items:center;padding:env(safe-area-inset-top) 14px env(safe-area-inset-bottom);overflow-x:hidden}
+#pig{font-size:58px;margin-top:16px;cursor:pointer;line-height:1}
+#say{background:#fff;border-radius:14px;padding:8px 14px;font-size:14px;min-height:36px;max-width:310px;text-align:center;box-shadow:0 3px 10px #d94a7e33;margin-top:4px;line-height:1.5}
+#prog{letter-spacing:5px;margin:12px 0 6px;font-size:18px}
+#q{width:100%;max-width:340px;background:#ffffffcc;border-radius:22px;padding:20px 18px 12px;box-shadow:0 6px 20px #d94a7e33}
+#q h2{font-size:19px;margin:0 0 14px;line-height:1.5;text-align:center}
+button{font:inherit;border:0;border-radius:20px;padding:10px 18px;background:#ff6f9f;color:#fff;font-weight:600;box-shadow:0 3px 0 #d94a7e}
+button.g{background:#fff;color:#d94a7e;box-shadow:0 3px 0 #ffb3cc}
+.opt{display:block;width:100%;margin:12px 0;padding:15px;font-size:17px;border-radius:16px;background:#fff;color:#c23a6b;border:2px solid #ff8fb1;box-shadow:0 3px 0 #ffb3cc;transition:all .35s}
+.opt.ok{background:#ff6f9f;color:#fff}
+.pulse{animation:pulse .9s infinite}
+@keyframes pulse{50%{transform:scale(1.07);box-shadow:0 0 18px #ff6f9f}}
+#ov{position:fixed;inset:0;background:#7a214688;display:none;align-items:center;justify-content:center;z-index:9}
+#ov.on{display:flex}
+#card{background:#fff;border-radius:22px;padding:26px 22px;width:86vw;max-width:350px;max-height:86vh;overflow:auto;text-align:center;line-height:1.7}
+#card .big{font-size:56px}
+#card h2{margin:6px 0;font-size:20px}
+#card p{margin:8px 0 14px}
+#card button{margin:4px}
+#card.slow button{opacity:0;animation:fade 1s 4s forwards}
+.fin p{opacity:0;font-size:23px;font-weight:700;color:#d94a7e;animation:fade 1.3s forwards}
+@keyframes fade{to{opacity:1}}
+@keyframes fall{to{transform:translateY(112vh) rotate(360deg)}}
+.rain{position:fixed;top:-40px;z-index:20;pointer-events:none;animation:fall linear forwards}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px) rotate(-3deg)}40%{transform:translateX(10px) rotate(3deg)}60%{transform:translateX(-8px)}80%{transform:translateX(8px)}}
+.shake{animation:shake .5s}
+@keyframes boing{0%,100%{transform:scale(1)}50%{transform:scale(1.25) rotate(-8deg)}}
+.boing{display:inline-block;animation:boing .8s infinite}
+.cp{background:#fff0f5;border:2px dashed #ff8fb1;border-radius:12px;padding:8px 10px;margin:6px 0;text-align:left}
+.letter{text-align:left;background:#fff7fa;border-radius:12px;padding:12px;font-size:15px}
+.rec{font-size:13px;opacity:.8}
+</style>
+</head>
+<body>
+<div id="pig">🐷</div>
+<div id="say">哼哼,准备好答题了吗?</div>
+<div id="prog"></div>
+<div id="q"></div>
+<div id="ov"><div id="card"></div></div>
+<script>
+const TITLE="爱吃睡的粉色笨猪";
+const NEXT_MEET="爱你的每一天 ♾️";
+const LETTER=`亲爱的笨猪:<br>走散了两年,又走回到彼此身边,我比谁都珍惜。异地很远,但每天跟你说话的时候,我都觉得你就在旁边。谢谢你愿意回来,也谢谢你一直是你。<br><br>—— 永远爱你的WUcy`;
+const COUPONS=["免费拥抱券 × 1,见面当场兑换","吃饱饱请客券 × 1","亲亲券 × 999(不许赖账)","无理取闹豁免券 × 1","每日晚安券,永久有效"];
+const QUOTES=["隔着屏幕,我也想把全世界的好都给你。","你一出现,我这一天就圆满了。","想你的时候,连空气都是甜的。","喜欢你,是我做过最确定的事。","有你在,再远的路我都想走。","我们走了很远,才又走到一起。"];
+const QS=[
+{q:"异地的我们,每天最重要的事是什么?",a:"每天保持联系 💬",w:[["各忙各的","shrink"],["看心情联系","vanish"]],ex:"不管多远,每天都要找你说说话。"},
+{q:"我最想给你的是什么?",a:"足够的安全感 🏠",w:[["一个大红包","dodge"],["一个新包包","morph:想得美~"]],ex:"让你知道,不管发生什么,我都在。"},
+{q:"虽然不在身边,我心里装着谁?",a:"你,只有你 💗",w:[["别人","dodge"],["没有","morph:再说一遍?"]],ex:"心里有你,所以再远也不觉得远。"},
+{q:"下次见面,第一件事要做什么?",a:"先吃饱饱 🍜",w:[["先逛街","shrink"],["先睡觉","vanish"]],ex:"爱吃爱睡的小猪,当然要先喂饱呀。"},
+{q:"吃饱饱之后呢?",a:"亲亲 😘",w:[["握握手","morph:太见外了吧"],["拍张照","dodge"]],ex:"这个,不许赖账哦~"},
+{q:"经过这两年,我这次想对你说?",a:"这一次,我会一直在 🤍",w:[["随缘吧","shrink"],["走一步看一步","vanish"]],ex:"走散过,才更知道你有多重要。"},
+{q:"最后一题:你爱我吗?",a:"爱 💗",w:[["不爱","dodge"],["有一点点","shrink"],["你猜","morph:不许猜~"]],ex:"final"}
+];
+// =====================================
+const WRONG=["这个选项好像不太对~","哎呀,它缩了!","再想想,只有一个答案哦","笨猪,看看旁边那个~","点错啦,罚你亲亲手机"];
+const CUTE=["哼哼,吃饱了吗?","困了就睡会儿,不着急~","我才不是笨猪……好吧是","想你啦~","今天也要开心哦"];
+const $=id=>document.getElementById(id);
+const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const KEY="pigquiz";
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{plays:0,done:0,wrong:0,qw:{}}}catch(e){return{plays:0,done:0,wrong:0,qw:{}}}}
+let R=load();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(R))}catch(e){}}
+function say(t){$("say").textContent=t}
+$("pig").onclick=()=>{say(pick(CUTE));shakeIt($("pig"))};
+function shakeIt(el){el.classList.remove("shake");void el.offsetWidth;el.classList.add("shake")}
+function rain(e,n){for(let i=0;i<n;i++){const d=document.createElement("div");d.className="rain";d.textContent=e;d.style.left=Math.random()*95+"vw";d.style.fontSize=(18+Math.random()*22)+"px";d.style.animationDuration=(2+Math.random()*2.5)+"s";d.style.animationDelay=Math.random()*1.2+"s";document.body.appendChild(d);setTimeout(()=>d.remove(),6500)}}
+function ov(em,ti,tx,bs,cls){
+  const c=$("card");c.className=cls||"";
+  c.innerHTML=`<div class="big">${em}</div><h2>${ti}</h2><p>${tx}</p>`;
+  bs.forEach(([l,f,k])=>{const b=document.createElement("button");b.textContent=l;if(k)b.className=k;b.onclick=()=>{$("ov").classList.remove("on");f()};c.appendChild(b)});
+  c.scrollTop=0;$("ov").classList.add("on");
+}
+
+let qi=0,wrongHere=0;
+function start(){R.plays++;save();qi=0;showQ()}
+function showQ(){
+  const Q=QS[qi];wrongHere=0;
+  $("prog").textContent=QS.map((_,i)=>i<qi?"💗":"🤍").join("");
+  say(qi==6?"最后一题啦,认真答哦~":"第 "+(qi+1)+" 题,慢慢想~");
+  const box=$("q");box.innerHTML=`<h2>${Q.q}</h2>`;
+  const opts=[{t:Q.a,ok:1},...Q.w.map(([t,b])=>({t,b,n:0}))];
+  shuffle(opts).forEach(o=>{
+    const b=document.createElement("button");b.className="opt";b.textContent=o.t;
+    if(o.ok){b.dataset.ok=1;b.onclick=()=>right(b)}else b.onclick=()=>bad(b,o);
+    box.appendChild(b);
+  });
+}
+function gone(b){b.style.opacity=0;b.style.transform+=" scale(0)";b.style.pointerEvents="none";setTimeout(()=>b.style.display="none",380)}
+function bad(b,o){
+  o.n++;R.wrong++;R.qw[qi]=(R.qw[qi]||0)+1;save();wrongHere++;
+  try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}
+  const k=o.b.split(":")[0];
+  if(k==="shrink"){b.style.transform=`scale(${1-o.n*.3})`;if(o.n>=3)gone(b)}
+  else if(k==="vanish"){b.style.opacity=.35;b.style.transform="scale(.85)";if(o.n>=2)gone(b)}
+  else if(k==="dodge"){b.style.transform=`translate(${(Math.random()*150-75)|0}px,${(Math.random()*40-20)|0}px) rotate(${(Math.random()*30-15)|0}deg)`;if(o.n>=3)gone(b)}
+  else{if(o.n==1){b.textContent=o.b.split(":")[1];b.style.transform="scale(.8)"}else gone(b)}
+  say(pick(WRONG));
+  if(wrongHere>=3)document.querySelector("[data-ok]").classList.add("pulse");
+}
+function right(b){
+  const Q=QS[qi];
+  document.querySelectorAll(".opt").forEach(x=>x.style.pointerEvents="none");
+  b.classList.add("ok");rain("💗",16);say("答对啦!");
+  if(Q.ex==="final")return void setTimeout(finalQ,700);
+  setTimeout(()=>ov("💗","答对啦!",`${Q.ex}<br><br><i>${QUOTES[qi]}</i>`,[[qi<5?"下一题":"最后一题",()=>{qi++;showQ()}]]),700);
+}
+function finalQ(){
+  rain("💗",40);
+  ov("💗","",`<div class="fin"><p style="animation-delay:.3s">我一直爱你。</p><p style="animation-delay:1.8s">以前,现在,<br>包括以后。</p></div>`,[["继续",letter]],"slow");
+}
+function letter(){ov("💌","给"+TITLE,`<div class="letter">${LETTER}</div>`,[["继续",task]])}
+function task(){ov("🎤","终极任务","异地也没关系,打开视频或语音,对着我(或者手机)大声说一句:<br><b>“我爱你”</b><br><span class='rec'>说出来,才能打开最后的惊喜 🎁</span>",[["🎤 我要说",listen],["我不说",pig,"g"]])}
+function listen(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR)return honor("这个浏览器不能识别语音,那就靠自觉啦。");
+  const r=new SR();let got=false;r.lang="zh-CN";
+  r.onresult=e=>{got=true;const s=e.results[0][0].transcript;
+    if(/我爱你|爱你/.test(s))love();
+    else ov("🤔",`听到的是“${s}”`,"不是“我爱你”哦,再说一次?",[["再说一次",listen],["我不说",pig,"g"]])};
+  r.onerror=()=>{got=true;honor("麦克风好像不能用,那就靠自觉啦。")};
+  r.onend=()=>{if(!got)ov("🙉","没听清","请靠近一点,大声说:我爱你",[["再说一次",listen],["我不说",pig,"g"]])};
+  ov("🎤","在听呢…","请大声说:<b>我爱你</b>",[["取消",task,"g"]]);
+  try{r.start()}catch(e){honor("麦克风好像不能用,那就靠自觉啦。")}
+}
+function honor(m){ov("🤝","凭良心回答",m+"<br>你真的亲口对我说了“我爱你”吗?微信和我说，不然画个qq诅咒你",[["说啦!",love],["没说",pig,"g"]])}
+function pig(){
+  rain("🐷",28);
+  ov(`<span class="boing">🐷</span>`,"粉色小笨猪!","没有说“我爱你”,你就是粉色小笨猪!哼哼哼~ 🐽<br><br>🔒 最后的惊喜被锁住啦,大声说出来才能打开哦~",[["我要重新挑战",task]]);
+  shakeIt($("card"));
+}
+function love(){
+  R.done++;save();
+  let mq=-1,mv=0;for(const k in R.qw)if(R.qw[k]>mv){mv=R.qw[k];mq=k}
+  const line=mq>=0?`你最爱点错的是第 ${+mq+1} 题,点了 ${mv} 次,笨猪~`:"一次都没点错,太聪明啦!";
+  rain("💗",34);rain("🎉",10);
+  ov("🥰","惊喜解锁!",`<div class="letter">他一定听到啦~</div><p>🎁 你的专属优惠券:</p>${COUPONS.map(c=>`<div class="cp">🎟️ ${c}</div>`).join("")}<p><b>下次见面:</b><br>${NEXT_MEET}</p><p class="rec">第 ${R.done} 次通关 · 累计点错 ${R.wrong} 次<br>${line}</p>`,[["再玩一次",start]]);
+}
+
+ov("🐷",TITLE,`7 道题,每题只有一个答案。<br>别的选项……你点点看就知道啦。<br><span class="rec">${R.plays?`你已经来过 ${R.plays} 次,累计点错 ${R.wrong} 次`:"第一次来哦~"}</span>`,[["开始答题",start]]);
+</script>
+</body>
+</html>
